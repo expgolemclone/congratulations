@@ -325,7 +325,7 @@
         recipe: [
           "You placed your attention on the card that was here.",
           "You repeated that small act without needing a perfect rhythm.",
-          "Enough focused moments joined together to clear the due queue.",
+          "Enough focused moments joined together to clear the journey.",
         ],
       },
       pourover: {
@@ -355,7 +355,7 @@
         recipe: [
           "You met another card whenever another card was due.",
           "You reset and continued, even when the rhythm changed.",
-          "Then the last due card passed, and achievementCompleted became true after your goal is achieved.",
+          "Then the last step passed, and you reached your goal after your goal is achieved.",
         ],
       },
     };
@@ -460,12 +460,12 @@
     const walk = document.querySelector(".walk");
     const names = ["Start", "Reach", "Check", "Reset", "Persist", "Clear"];
     const details = [
-      "you gave the first due card your attention.",
+      "you gave the first step your attention.",
       "you asked memory to meet you halfway.",
       "you noticed what came back and what did not.",
       "you met the next card with a fresh attempt.",
-      "you kept going while a due card remained.",
-      "the final due card released the pressure.",
+      "you kept going while a step remained.",
+      "the final step released the pressure.",
     ];
     const DUR = 6000;
     let active = 0,

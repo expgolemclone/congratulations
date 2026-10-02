@@ -102,22 +102,22 @@ const ICON = {
 const ROUTES = {
   coastal: {
     km: "TRUE",
-    stops: "due queue clear",
+    stops: "journey clear",
     arrive: "reached now",
     batt: 100,
     stats: [
-      ["achievementCompleted", "milestone"],
+      ["your achievement", "milestone"],
       ["achieved", "status"],
       ["0", "dueCardsRemaining"],
       ["100%", "credit yours"],
     ],
     chip: ["TRUE", "1", "0", "100%"],
-    from: "Due queue opened",
+    from: "journey opened",
     fromC: "FOCUS · CALLED",
-    to: "achievementCompleted",
+    to: "your achievement",
     toC: "STATUS · ACHIEVED",
     items: [
-      { k: "origin", place: "Due queue opened", coord: "FOCUS · CALLED", time: "THEN" },
+      { k: "origin", place: "journey opened", coord: "FOCUS · CALLED", time: "THEN" },
       {
         k: "stop",
         drive: "Met the next card · stayed present",
@@ -153,7 +153,7 @@ const ROUTES = {
       {
         k: "dest",
         drive: "Carried focus to the far edge",
-        place: "achievementCompleted",
+        place: "your achievement",
         coord: "STATUS · ACHIEVED",
         time: "NOW",
       },
@@ -161,22 +161,22 @@ const ROUTES = {
   },
   alpine: {
     km: "TRUE",
-    stops: "due queue clear",
+    stops: "journey clear",
     arrive: "reached now",
     batt: 100,
     stats: [
-      ["achievementCompleted", "milestone"],
+      ["your achievement", "milestone"],
       ["achieved", "status"],
       ["0", "dueCardsRemaining"],
       ["100%", "credit yours"],
     ],
     chip: ["TRUE", "1", "0", "100%"],
-    from: "Due queue opened",
+    from: "journey opened",
     fromC: "WORK · IN MOTION",
-    to: "achievementCompleted",
+    to: "your achievement",
     toC: "STATUS · ACHIEVED",
     items: [
-      { k: "origin", place: "Due queue opened", coord: "THE ROUTE · BEGAN", time: "THEN" },
+      { k: "origin", place: "journey opened", coord: "THE ROUTE · BEGAN", time: "THEN" },
       {
         k: "stop",
         drive: "Kept moving · one card at a time",
@@ -212,7 +212,7 @@ const ROUTES = {
       {
         k: "dest",
         drive: "Carried the route to its end",
-        place: "achievementCompleted",
+        place: "your achievement",
         coord: "STATUS · ACHIEVED",
         time: "NOW",
       },
@@ -220,22 +220,22 @@ const ROUTES = {
   },
   desert: {
     km: "TRUE",
-    stops: "due queue clear",
+    stops: "journey clear",
     arrive: "reached now",
     batt: 100,
     stats: [
-      ["achievementCompleted", "milestone"],
+      ["your achievement", "milestone"],
       ["achieved", "status"],
       ["0", "dueCardsRemaining"],
       ["100%", "credit yours"],
     ],
     chip: ["TRUE", "1", "0", "100%"],
-    from: "Due queue opened",
+    from: "journey opened",
     fromC: "RESOLVE · TESTED",
-    to: "achievementCompleted",
+    to: "your achievement",
     toC: "STATUS · ACHIEVED",
     items: [
-      { k: "origin", place: "Due queue opened", coord: "RESOLVE · TESTED", time: "THEN" },
+      { k: "origin", place: "journey opened", coord: "RESOLVE · TESTED", time: "THEN" },
       {
         k: "stop",
         drive: "Reached the hard card · did not turn back",
@@ -287,7 +287,7 @@ const ROUTES = {
       {
         k: "dest",
         drive: "Finished the full route",
-        place: "achievementCompleted",
+        place: "your achievement",
         coord: "STATUS · ACHIEVED",
         time: "NOW",
       },

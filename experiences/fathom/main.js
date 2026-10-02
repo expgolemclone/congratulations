@@ -194,7 +194,7 @@
       }
       const label = tfLabel ? tfLabel.textContent : "Your pause";
       form.innerHTML =
-        '<div class="ticket-done"><strong>Milestone marked — achievementCompleted is achieved.</strong>' +
+        '<div class="ticket-done"><strong>Milestone marked — your goal is achieved.</strong>' +
         '<span class="mono">' +
         label +
         " · return on " +

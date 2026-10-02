@@ -116,7 +116,7 @@ for (const path of await filesBelow(resolve(projectRoot, "experiences"))) {
     continue;
   }
   const source = await readFile(path, "utf8");
-  assert.doesNotMatch(source, /\b\d+\s+new questions\b/i, path);
+  assert.doesNotMatch(source, /dailyKpiCompleted|achievementCompleted|due card|due queue|daily new-question goal/i, path);
   assert.doesNotMatch(
     source,
     /https:\/\/(?:fonts\.(?:googleapis|gstatic)\.com|cdn\.jsdelivr\.net)\//,

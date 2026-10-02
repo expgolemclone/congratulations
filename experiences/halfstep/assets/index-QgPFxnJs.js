@@ -317,7 +317,7 @@ function J() {
         return;
       }
       const o = (e == null ? void 0 : e.value) ?? "M";
-      t.innerHTML = `<div class="res-done"><strong>Moment sealed — achievementCompleted.</strong><span class="mono">lap ${o} · demo only, nothing was sent. the finish is already yours.</span></div>`;
+      t.innerHTML = `<div class="res-done"><strong>Moment sealed — your achievement.</strong><span class="mono">lap ${o} · demo only, nothing was sent. the finish is already yours.</span></div>`;
       const i = t.querySelector(".res-done");
       i && (i.setAttribute("tabindex", "-1"), i.focus());
     });

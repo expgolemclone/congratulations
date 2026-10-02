@@ -375,7 +375,7 @@ const NODES = [
     see: "0.9″",
     ap: "0.6 m RC",
     status: "live",
-    target: "achievementCompleted · confirmed",
+    target: "your achievement · confirmed",
   },
   {
     name: "Pacific Chorus",

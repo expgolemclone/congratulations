@@ -507,7 +507,7 @@
         return;
       }
       status.textContent =
-        "Moment marked. achievementCompleted is true: your goal is achieved, and this finish is yours.";
+        "Moment marked. you reached your goal: your goal is achieved, and this finish is yours.";
       status.classList.add("show");
     });
 

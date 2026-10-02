@@ -1,0 +1,4 @@
+- 共通の呼び出し契約はcontracts/celebration.mjsを正本とし, consumerへ複製しない.
+- ノルマの判定と達成記録は呼び出し元が管理する.
+- push前にnpm testを全件合格させ, deployとproduction検証まで完了する.
+- 静的assetsをWorkerの起動なしで配信し, 永続logとtraceは無効にする.

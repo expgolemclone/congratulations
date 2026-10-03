@@ -4,7 +4,13 @@ Shared static celebrations for any application. The caller owns achievement veri
 
 The required query fields are `source`, `date` (YYYY-MM-DD), and `achievement`. Their contract is `contracts/celebration.mjs`. No credentials or learning data are accepted. Unknown or duplicate fields are rejected.
 
-The exported package provides `celebrationURL`, `celebrationSearch`, and `parseCelebration`. Consumers pin the contract tgz from a GitHub Release. The deployed URL remains `https://kakomonn-congratulations.kakomonn.workers.dev/`.
+The `@expgolemclone/congratulations/celebration` entry provides `celebrationURL`, `celebrationSearch`, and `parseCelebration`. Consumers pin `expgolemclone-congratulations-<version>.tgz` from a GitHub Release. Internal file paths and the package root are not public entries. The deployed URL remains `https://kakomonn-congratulations.kakomonn.workers.dev/`.
+
+```js
+import { celebrationURL } from '@expgolemclone/congratulations/celebration';
+```
+
+The package currently exports only the celebration contract. Short answer-feedback components are not included.
 
 The shell reveals the selected iframe as soon as navigation starts and keeps a
 small loading status over it until the experience announces readiness. The
@@ -70,6 +76,8 @@ Run the complete local build and browser suite from the repository root.
 ```bash
 npm test
 ```
+
+The suite verifies public exports and package contents as well as the complete browser suite. Before publishing, pack into `C:/dev/tmp/congratulations-release-<timestamp>`, install that tgz into an isolated consumer there, and verify the public entry. Publish the tgz as a GitHub Release `v<version>` from the tested, synchronized `main` SHA, then update consumers to its fixed release URL. Remove the temporary directory after verification.
 
 The production URL is
 `https://kakomonn-congratulations.kakomonn.workers.dev/`. Deployment and the

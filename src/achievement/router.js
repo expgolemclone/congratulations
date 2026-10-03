@@ -1,6 +1,6 @@
-import manifest from "./celebrations.json" with { type: "json" };
-import { parseCelebration, READY_MESSAGE } from "./contracts/celebration.mjs";
-import { chooseCelebration, validateManifest } from "./celebration-selection.mjs";
+import manifest from "./experiences.json" with { type: "json" };
+import { parseCelebration, READY_MESSAGE } from "../contracts/celebration.mjs";
+import { chooseCelebration, validateManifest } from "./selection.mjs";
 
 const READY_TIMEOUT_MS = 12_000;
 

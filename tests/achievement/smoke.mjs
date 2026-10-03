@@ -3,10 +3,10 @@ import { access, readFile, readdir } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
-import { celebrationSearch, parseCelebration } from "../contracts/celebration.mjs";
-import { chooseCelebration, randomIndex, validateManifest } from "../celebration-selection.mjs";
+import { celebrationSearch, parseCelebration } from "@expgolemclone/congratulations/celebration";
+import { chooseCelebration, randomIndex, validateManifest } from "../../src/achievement/selection.mjs";
 
-const projectRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
+const projectRoot = resolve(dirname(fileURLToPath(import.meta.url)), "../..");
 const expectedIds = [
   "aperture-lab",
   "conche",
@@ -26,7 +26,7 @@ const expectedIds = [
   "perigee-astro",
 ];
 const manifest = validateManifest(
-  JSON.parse(await readFile(resolve(projectRoot, "celebrations.json"), "utf8")),
+  JSON.parse(await readFile(resolve(projectRoot, "src/achievement/experiences.json"), "utf8")),
 );
 assert.deepEqual(
   manifest.experiences.map(({ id }) => id),
@@ -69,14 +69,14 @@ for (const experience of manifest.experiences) {
 await access(resolve(projectRoot, "dist", "index.html"));
 await access(resolve(projectRoot, "dist", "shared", "experience-runtime.js"));
 
-for (const sourcePath of [resolve(projectRoot, "index.html"), resolve(projectRoot, "router.js")]) {
+for (const sourcePath of [resolve(projectRoot, "index.html"), resolve(projectRoot, "src/achievement/router.js")]) {
   const source = await readFile(sourcePath, "utf8");
   assert.equal(source.includes("data-milestone"), false);
   assert.equal(/[\u3040-\u30ff\u3400-\u9fff]/u.test(source), false);
   assert.doesNotMatch(source, /\b\d+\s+new questions\b/i, sourcePath);
 }
 
-const routerSource = await readFile(resolve(projectRoot, "router.js"), "utf8");
+const routerSource = await readFile(resolve(projectRoot, "src/achievement/router.js"), "utf8");
 assert.equal(routerSource.includes("entryUrl.search"), false);
 assert.ok(
   routerSource.indexOf("frame.hidden = false") < routerSource.indexOf("frame.src = entryUrl.href"),

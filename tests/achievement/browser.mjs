@@ -5,13 +5,13 @@ import { fileURLToPath } from "node:url";
 
 import { chromium, webkit } from "playwright";
 
-import { celebrationSearch } from "../contracts/celebration.mjs";
-import { validateManifest } from "../celebration-selection.mjs";
-import { startStaticServer } from "./server-helper.mjs";
+import { celebrationSearch } from "@expgolemclone/congratulations/celebration";
+import { validateManifest } from "../../src/achievement/selection.mjs";
+import { startStaticServer } from "../helpers/server-helper.mjs";
 
-const projectRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
+const projectRoot = resolve(dirname(fileURLToPath(import.meta.url)), "../..");
 const manifest = validateManifest(
-  JSON.parse(await readFile(resolve(projectRoot, "celebrations.json"), "utf8")),
+  JSON.parse(await readFile(resolve(projectRoot, "src/achievement/experiences.json"), "utf8")),
 );
 const celebration = {
   source: "chushoks.kakomonn.com",

@@ -7,7 +7,7 @@ import { fileURLToPath } from "node:url";
 
 
 
-const projectRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
+const projectRoot = resolve(dirname(fileURLToPath(import.meta.url)), "../..");
 const repositoryRoot = projectRoot;
 const wranglerPath = resolve(repositoryRoot, "node_modules", "wrangler", "bin", "wrangler.js");
 

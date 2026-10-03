@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { celebrationSearch, celebrationURL, isCelebration, parseCelebration } from '../contracts/celebration.mjs';
+import { celebrationSearch, celebrationURL, isCelebration, parseCelebration } from '@expgolemclone/congratulations/celebration';
 
 test('arbitrary applications and achievements share the same contract', () => {
   for (const source of ['chushoks.kakomonn.com', 'smec-second', 'workout']) {

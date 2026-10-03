@@ -4,16 +4,18 @@ import { readFile } from 'node:fs/promises';
 import test from 'node:test';
 import { celebrationURL } from '@expgolemclone/congratulations/celebration';
 
-const root = new URL('../', import.meta.url);
+const root = new URL('../../', import.meta.url);
 const manifest = JSON.parse(await readFile(new URL('package.json', root), 'utf8'));
 
-test('the congratulations package exposes only its public celebration entry', async () => {
+test('the congratulations package exposes only its two public entries', async () => {
   assert.equal(manifest.name, '@expgolemclone/congratulations');
-  assert.deepEqual(manifest.exports, { './celebration': './contracts/celebration.mjs' });
+  assert.deepEqual(manifest.exports, {
+    './celebration': './src/contracts/celebration.mjs', './feedback': './src/feedback/index.mjs',
+  });
   assert.equal(celebrationURL({ source: 'workout', date: '2026-10-03', achievement: 'daily-goal' }),
     'https://kakomonn-congratulations.kakomonn.workers.dev/?achievement=daily-goal&date=2026-10-03&source=workout');
   for (const entry of ['@expgolemclone/congratulations',
-    '@expgolemclone/congratulations/contracts/celebration.mjs']) {
+    '@expgolemclone/congratulations/src/contracts/celebration.mjs']) {
     await assert.rejects(import(entry), { code: 'ERR_PACKAGE_PATH_NOT_EXPORTED' });
   }
   const lock = JSON.parse(await readFile(new URL('package-lock.json', root), 'utf8'));
@@ -35,5 +37,8 @@ test('the published archive excludes site snapshots, vendors and private impleme
   assert.equal(archive.version, manifest.version);
   assert.equal(archive.filename, `expgolemclone-congratulations-${manifest.version}.tgz`);
   assert.deepEqual(archive.files.map(file => file.path).sort(),
-    ['LICENSE', 'README.md', 'contracts/celebration.mjs', 'package.json']);
+    ['LICENSE', 'README.md', 'package.json', 'src/contracts/celebration.mjs',
+      ...['audio.mjs', 'chime.mjs', 'index.mjs', 'player.mjs', 'styles.mjs', 'variants.mjs', 'view.mjs',
+        'audio/correct-normal.mp3', 'audio/correct-rare.mp3', 'audio/correct-super-rare.mp3',
+        'audio/correct-ssr.mp3', 'audio/incorrect.mp3'].map(name => `src/feedback/${name}`)].sort());
 });

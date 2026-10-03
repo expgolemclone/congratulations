@@ -4,11 +4,11 @@ import { fileURLToPath } from "node:url";
 
 import { defineConfig } from "vite";
 
-import { validateManifest } from "./celebration-selection.mjs";
+import { validateManifest } from "./src/achievement/selection.mjs";
 
 const projectRoot = dirname(fileURLToPath(import.meta.url));
 const manifest = validateManifest(
-  JSON.parse(readFileSync(resolve(projectRoot, "celebrations.json"), "utf8")),
+  JSON.parse(readFileSync(resolve(projectRoot, "src/achievement/experiences.json"), "utf8")),
 );
 
 function copyCelebrationAssets() {
@@ -34,7 +34,7 @@ export default defineConfig({
       preserveEntrySignatures: "strict",
       input: {
         shell: resolve(projectRoot, "index.html"),
-        "experience-runtime": resolve(projectRoot, "shared", "experience-runtime.js"),
+        "experience-runtime": resolve(projectRoot, "src/achievement/experience-runtime.js"),
       },
       output: {
         entryFileNames(chunk) {

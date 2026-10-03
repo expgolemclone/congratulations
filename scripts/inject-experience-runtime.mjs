@@ -1,40 +1,28 @@
-import { readFile, writeFile } from "node:fs/promises";
-import { dirname, resolve } from "node:path";
-import { fileURLToPath } from "node:url";
+import { readFile, writeFile } from 'node:fs/promises';
+import { dirname, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { validateManifest } from '../src/achievement/selection.mjs';
 
-import { validateManifest } from "../celebration-selection.mjs";
+const projectRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..');
+const marker = 'data-celebration-runtime';
 
-const projectRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
-const manifest = validateManifest(
-  JSON.parse(await readFile(resolve(projectRoot, "celebrations.json"), "utf8")),
-);
-const marker = "data-celebration-runtime";
+export function injectExperienceRuntime(source, id) {
+  if (!/^[a-z0-9-]+$/.test(id)) throw new TypeError('Experience ID is invalid.');
+  if (source.includes(marker) || source.includes('/shared/experience-runtime.js')) return source;
+  const closingBody = source.lastIndexOf('</body>');
+  if (closingBody === -1) throw Error(`${id} does not contain a closing body tag.`);
+  const runtime = `<script type="module" ${marker}>\n` +
+    '  import { announceCelebration } from "/shared/experience-runtime.js";\n' +
+    `  announceCelebration(${JSON.stringify(id)});\n</script>\n`;
+  return `${source.slice(0, closingBody)}${runtime}${source.slice(closingBody)}`;
+}
 
-for (const experience of manifest.experiences) {
-  const entryPath = resolve(projectRoot, experience.entry);
-  let source;
-  try {
-    source = await readFile(entryPath, "utf8");
-  } catch (error) {
-    if (error?.code === "ENOENT") {
-      continue;
-    }
-    throw error;
+if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+  const manifest = validateManifest(JSON.parse(await readFile(resolve(projectRoot, 'src/achievement/experiences.json'), 'utf8')));
+  for (const experience of manifest.experiences) {
+    const entryPath = resolve(projectRoot, experience.entry, 'index.html');
+    const source = await readFile(entryPath, 'utf8');
+    const updated = injectExperienceRuntime(source, experience.id);
+    if (updated !== source) await writeFile(entryPath, updated, 'utf8');
   }
-  if (source.includes(marker) || source.includes("/shared/experience-runtime.js")) {
-    continue;
-  }
-  const closingBody = source.lastIndexOf("</body>");
-  if (closingBody === -1) {
-    throw new Error(`${experience.entry} does not contain a closing body tag.`);
-  }
-  const runtime = [
-    `<script type="module" ${marker}>`,
-    '  import { announceCelebration } from "/shared/experience-runtime.js";',
-    `  announceCelebration(${JSON.stringify(experience.id)});`,
-    "</script>",
-    "",
-  ].join("\n");
-  const updated = `${source.slice(0, closingBody)}${runtime}${source.slice(closingBody)}`;
-  await writeFile(entryPath, updated, "utf8");
 }

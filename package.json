@@ -1,17 +1,18 @@
 {
   "name": "@expgolemclone/congratulations",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "type": "module",
   "exports": {
-    "./celebration": "./contracts/celebration.mjs"
+    "./celebration": "./src/contracts/celebration.mjs",
+    "./feedback": "./src/feedback/index.mjs"
   },
-  "files": ["contracts/celebration.mjs", "LICENSE"],
+  "files": ["src/contracts/celebration.mjs", "src/feedback", "LICENSE"],
   "license": "MIT",
   "repository": {"type": "git", "url": "https://github.com/expgolemclone/congratulations"},
   "scripts": {
     "build": "vite build",
-    "test": "node --test tests/*.test.mjs && npm run build && node tests/smoke.mjs && node tests/browser.mjs",
-    "test:production": "npm run build && node --use-system-ca tests/production.mjs",
+    "test": "node --test tests/contracts/*.test.mjs tests/achievement/*.test.mjs tests/feedback/*.test.mjs && npm run build && node tests/achievement/smoke.mjs && node tests/achievement/browser.mjs && node tests/feedback/browser.mjs",
+    "test:production": "npm run build && node --use-system-ca tests/achievement/production.mjs",
     "deploy": "npm test && node --use-system-ca node_modules/wrangler/bin/wrangler.js deploy && npm run test:production"
   },
   "devDependencies": {"playwright": "1.62.0", "vite": "8.1.5", "wrangler": "4.120.0"}

@@ -1,6 +1,6 @@
 # Congratulations
 
-Shared static celebrations for any application. The caller owns achievement verification and persistence.
+An achievement-first celebration with a trophy, personal recognition, and replayable confetti. Reduced-motion users get the same recognition without animation. The caller owns achievement verification and persistence.
 
 The required query fields are `source`, `date` (YYYY-MM-DD), and `achievement`. Their contract is `src/contracts/celebration.mjs`. No credentials or learning data are accepted. Unknown or duplicate fields are rejected.
 
@@ -12,54 +12,12 @@ import { celebrationURL } from '@expgolemclone/congratulations/celebration';
 
 `@expgolemclone/congratulations/feedback` exports the short correct-answer feedback: secure rarity selection, copy, visuals, chimes, five local MP3 assets, and a gesture-prepared player. Callers own correctness, score persistence, duplicate prevention, KPI speech and navigation. `prepare()` must run during the save/answer gesture; await `play()` before starting the next question. Audio failures are explicit and never select another playback method.
 
-Consumers must preserve relative module and asset paths when bundling or copying the feedback directory. Experience snapshots are deployment-only, not part of the package.
+Consumers must preserve relative module and asset paths when bundling or copying the feedback directory. The React/Mantine celebration screen is deployment-only, not part of the package.
 
 ## Acknowledgements
 
-Congratulations is built on a wonderful collection of open-source design
-experiences created by [bswxyz](https://github.com/bswxyz). A heartfelt thank
-you for sharing this work and making these celebrations possible.
-
-| Experience | Source repository |
-| --- | --- |
-| Aperture Lab | [bswxyz/aperture-lab](https://github.com/bswxyz/aperture-lab) |
-| Conche | [bswxyz/conche](https://github.com/bswxyz/conche) |
-| Driftline Ocean | [bswxyz/driftline-ocean](https://github.com/bswxyz/driftline-ocean) |
-| Fathom | [bswxyz/fathom](https://github.com/bswxyz/fathom) |
-| Chroma | [bswxyz/formwork-chroma](https://github.com/bswxyz/formwork-chroma) |
-| Contour | [bswxyz/formwork-contour](https://github.com/bswxyz/formwork-contour) |
-| Heliodon | [bswxyz/formwork-heliodon](https://github.com/bswxyz/formwork-heliodon) |
-| Isometria | [bswxyz/formwork-isometria](https://github.com/bswxyz/formwork-isometria) |
-| Meridian | [bswxyz/formwork-meridian](https://github.com/bswxyz/formwork-meridian) |
-| Nebula Drift | [bswxyz/formwork-nebula](https://github.com/bswxyz/formwork-nebula) |
-| Neon Sprawl | [bswxyz/formwork-neon](https://github.com/bswxyz/formwork-neon) |
-| Glyphica | [bswxyz/glyphica](https://github.com/bswxyz/glyphica) |
-| Halcyon Ring | [bswxyz/halcyon-ring](https://github.com/bswxyz/halcyon-ring) |
-| Halfstep | [bswxyz/halfstep](https://github.com/bswxyz/halfstep) |
-| Northbound | [bswxyz/northbound-ev](https://github.com/bswxyz/northbound-ev) |
-| Perigee | [bswxyz/perigee-astro](https://github.com/bswxyz/perigee-astro) |
-
-The snapshots are adapted under the MIT License. Copyright and license notices
-are preserved in each experience's `LICENSE` file.
-
-### Third-party software
-
-The deployed experiences and their snapshot builds also use the following
-open-source projects and resources.
-
-Runtime fonts, GSAP, and Three.js are served from versioned local assets under
-`public/vendor/`. Font and Three.js licenses, plus the GSAP package metadata and
-license reference, are deployed with those assets.
-
-| Purpose | Source repository |
-| --- | --- |
-| Animation runtime | [greensock/GSAP](https://github.com/greensock/GSAP) |
-| 3D rendering runtime | [mrdoob/three.js](https://github.com/mrdoob/three.js) |
-| Glyphica snapshot framework | [vercel/next.js](https://github.com/vercel/next.js) |
-| Glyphica UI runtime | [react/react](https://github.com/react/react) |
-| Conche snapshot framework | [withastro/astro](https://github.com/withastro/astro) |
-| Halfstep snapshot and Congratulations build tooling | [vitejs/vite](https://github.com/vitejs/vite) |
-| Web fonts | [google/fonts](https://github.com/google/fonts) |
+Built with [React](https://react.dev/), [Mantine](https://mantine.dev/),
+[canvas-confetti](https://github.com/catdad/canvas-confetti), and [Vite](https://vite.dev/).
 
 ## Development and testing
 

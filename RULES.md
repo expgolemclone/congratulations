@@ -1,0 +1,5 @@
+- upstream由来のUIと演出は共通のReact/Mantine統一とUI実装制限の例外とし, upstreamをそのまま低コストで利用する.
+- 共通の呼び出し契約はsrc/contracts/celebration.mjsを正本とし, consumerへ複製しない.
+- ノルマと正解の判定, 達成記録, 次問遷移は呼び出し元が管理する. 正解演出の定義, 表示, 効果音, 音声はsrc/feedbackを正本とし, consumerへ複製しない.
+- push前にnpm testを全件合格させ, deployとproduction検証まで完了する.
+- 静的assetsをWorkerの起動なしで配信し, 永続logとtraceは無効にする.

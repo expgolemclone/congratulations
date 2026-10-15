@@ -12,28 +12,7 @@ import { celebrationURL } from '@expgolemclone/congratulations/celebration';
 
 `@expgolemclone/congratulations/feedback` exports the short correct-answer feedback: secure rarity selection, copy, visuals, chimes, five local MP3 assets, and a gesture-prepared player. Callers own correctness, score persistence, duplicate prevention, KPI speech and navigation. `prepare()` must run during the save/answer gesture; await `play()` before starting the next question. Audio failures are explicit and never select another playback method.
 
-## Source layout
-
-- `src/contracts/`: public celebration URL contract.
-- `src/achievement/`: full-page shell, experience selection, manifest and frame runtime.
-- `src/feedback/`: reusable short feedback and its audio assets.
-- `tests/contracts/`, `tests/achievement/`, `tests/feedback/`: matching verification suites.
-- `tests/helpers/`: shared browser server.
-- `public/`: static delivery configuration and versioned vendors.
-- `experiences/`: deployable third-party snapshots, not included in the package.
-- `dist/`: generated deployment output.
-
-The package contains only the contract and feedback sources/assets. Consumers bundle or copy the feedback directory as one unit, preserving relative module and asset paths. Reader bundles the five MP3s as data URLs; smec-second serves them with its own public static assets.
-
-The shell reveals the selected iframe as soon as navigation starts and keeps a
-small loading status over it until the experience announces readiness. The
-Perigee particle field initializes after the first paint, pauses while the page
-is hidden, renders at no more than 30 fps, caps DPR at 1.5, and uses half of its
-previous mobile particle count.
-
-Deployable experience snapshots live in `experiences/` and are listed in
-`src/achievement/experiences.json`. The locally cloned design references in `upstreams/` are
-ignored by the parent repository and are not part of the production build.
+Consumers must preserve relative module and asset paths when bundling or copying the feedback directory. Experience snapshots are deployment-only, not part of the package.
 
 ## Acknowledgements
 
@@ -92,9 +71,7 @@ npm test
 
 The suite verifies public exports, package contents and the complete browser suite. Feedback uses real audio in Chromium. Windows Playwright WebKit has no media decoder backend: its feedback scheduling uses a controlled media clock, and a separate native playback test verifies the explicit decoding error. This does not replace audio verification on an actual iPhone. Before publishing, pack into `C:/dev/tmp/congratulations-release-<timestamp>`, install that tgz into an isolated consumer there, and verify the public entry. Publish the tgz as a GitHub Release `v<version>` from the tested, synchronized `main` SHA, then update consumers to its fixed release URL. Remove the temporary directory after verification.
 
-The production URL is
-`https://kakomonn-congratulations.kakomonn.workers.dev/`. Deployment and the
-production browser checks are contained in one command.
+Deployment and production browser checks run together:
 
 ```bash
 npm run deploy

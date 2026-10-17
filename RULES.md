@@ -1,3 +1,4 @@
+- Preserve upstream-derived UI, typography, layouts, rendering, motion, and native interactions. They are exempt from React/Mantine unification and custom-UI restrictions. Share integration infrastructure, not the experience designs.
 - 共通の呼び出し契約はsrc/contracts/celebration.mjsを正本とし, consumerへ複製しない.
 - ノルマと正解の判定, 達成記録, 次問遷移は呼び出し元が管理する. 正解演出の定義, 表示, 効果音, 音声はsrc/feedbackを正本とし, consumerへ複製しない.
 - push前にnpm testを全件合格させ, deployとproduction検証まで完了する.

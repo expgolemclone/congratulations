@@ -1,53 +1,54 @@
 import assert from 'node:assert/strict';
 import { readFile, readdir } from 'node:fs/promises';
-import { chromium } from 'playwright';
+import { relative } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { chromium, webkit } from 'playwright';
 import { celebrationSearch } from '@expgolemclone/congratulations/celebration';
 import { experiences } from '../../src/achievement/experiences.mjs';
-import { celebration, verifyCelebration, verifyMotion } from '../helpers/achievement-checks.mjs';
+import { celebration, verifyExperience } from '../helpers/experience-checks.mjs';
+import { verifyGraphics } from '../helpers/graphics-checks.mjs';
 
 const origin = 'https://kakomonn-congratulations.kakomonn.workers.dev';
-const root = new URL('../../', import.meta.url);
-const html = await readFile(new URL('dist/index.html', root), 'utf8');
+const dist = new URL('../../dist/', import.meta.url);
 const response = await fetch(origin);
 assert.equal(response.status, 200);
 assert.equal(response.headers.get('cache-control'), 'no-cache');
-assert.equal(await response.text(), html);
+assert.equal(await response.text(), await readFile(new URL('index.html', dist), 'utf8'));
 const etag = response.headers.get('etag');
 assert.notEqual(etag, null);
 assert.equal((await fetch(origin, { headers: { 'if-none-match': etag } })).status, 304);
-for (const experience of experiences) {
-  const deployed = await fetch(`${origin}/experiences/${experience.id}/`);
-  assert.equal(deployed.status, 200, experience.id);
-  assert.equal(deployed.headers.get('cache-control'), 'no-cache');
-  assert.equal(await deployed.text(), html);
-}
-for (const asset of await readdir(new URL('dist/assets/', root))) {
-  const deployed = await fetch(`${origin}/assets/${asset}`);
-  assert.equal(deployed.status, 200);
-  assert.equal(deployed.headers.get('cache-control'), 'public, max-age=31536000, immutable');
-  assert.deepEqual(Buffer.from(await deployed.arrayBuffer()), await readFile(new URL(`dist/assets/${asset}`, root)));
-}
-const licenses = await fetch(`${origin}/licenses.txt`);
-assert.equal(licenses.status, 200);
-assert.equal(await licenses.text(), await readFile(new URL('dist/licenses.txt', root), 'utf8'));
-for (const path of ['/experiences/conche/guide/', '/experiences/nope/', '/vendor/old.js']) {
-  assert.equal((await fetch(`${origin}${path}`)).status, 404);
-}
-const browser = await chromium.launch({ headless: true });
-try {
-  const page = await browser.newPage({ reducedMotion: 'reduce' });
+
+// Compare every deployed file, including native scripts, shaders, fonts and licenses.
+const entries = await readdir(dist, { recursive: true, withFileTypes: true });
+const paths = entries.filter(entry => entry.isFile() && !entry.name.startsWith('.') && entry.name !== '_headers')
+  .map(entry => `${relative(fileURLToPath(dist), entry.parentPath).replaceAll('\\', '/')}/${entry.name}`.replace(/^\//, ''));
+let next = 0;
+await Promise.all(Array.from({ length: 6 }, async () => {
+  while (next < paths.length) {
+    const path = paths[next++];
+    const deployed = await fetch(`${origin}/${path}`);
+    assert.equal(deployed.status, 200, path);
+    const immutable = path.startsWith('assets/') || path.startsWith('vendor/');
+    assert.equal(deployed.headers.get('cache-control'), immutable ? 'public, max-age=31536000, immutable' : 'no-cache', path);
+    assert.deepEqual(Buffer.from(await deployed.arrayBuffer()), await readFile(new URL(path, dist)), path);
+  }
+}));
+for (const path of ['/experiences/nope/', '/vendor/old.js']) assert.equal((await fetch(`${origin}${path}`)).status, 404);
+
+for (const engine of [chromium, webkit]) {
+  const browser = await engine.launch({ headless: true });
   try {
-    await page.goto(`${origin}/?${celebrationSearch(celebration)}`);
-    await page.waitForSelector('html[data-state="ready"]');
-    const id = await page.locator('html').getAttribute('data-experience-id');
-    assert(experiences.some(item => item.id === id));
-  } finally { await page.close(); }
-  for (const experience of experiences) {
-    console.log(`Production ${experience.id}`);
-    await verifyCelebration(browser, origin, { experience });
-  }
-  for (const id of ['aperture-lab', 'driftline-ocean', 'formwork-chroma', 'formwork-neon']) {
-    await verifyMotion(browser, origin, experiences.find(item => item.id === id), { touch: true, sustained: true });
-  }
-} finally { await browser.close(); }
-console.log('Production random entry, all sixteen six-chapter landing pages, three artworks per page, sustained motion, touch zoom, pause/resume and exact deployed assets verified');
+    const page = await browser.newPage({ reducedMotion: 'reduce' });
+    try {
+      await page.goto(`${origin}/?${celebrationSearch(celebration)}`);
+      await page.waitForSelector('html[data-state="ready"]');
+      assert(experiences.some(item => item.id === new URL(page.url()).pathname.split('/')[2]));
+    } finally { await page.close(); }
+    for (const experience of experiences) {
+      console.log(`Production ${engine.name()} ${experience.id}`);
+      await verifyExperience(browser, origin, experience, { viewport: { width: 390, height: 844 } });
+    }
+    await verifyGraphics(browser, origin);
+  } finally { await browser.close(); }
+}
+console.log(`Production native designs, interaction, motion, reduced motion and all ${paths.length} deployed files verified`);

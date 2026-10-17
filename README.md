@@ -1,6 +1,6 @@
 # Congratulations
 
-Sixteen randomly selected achievement celebrations, with continuous, pausable animation and reduced-motion support. The caller owns achievement verification and persistence.
+Sixteen randomly selected upstream-based achievement celebrations, preserving their native typography, layouts, graphics and interactions. The caller owns achievement verification and persistence.
 
 The required query fields are `source`, `date` (YYYY-MM-DD), and `achievement`. Their contract is `src/contracts/celebration.mjs`. No credentials or learning data are accepted. Unknown or duplicate fields are rejected.
 
@@ -16,8 +16,8 @@ Consumers must preserve relative module and asset paths when bundling or copying
 
 ## Acknowledgements
 
-Built with [React](https://react.dev/), [Mantine](https://mantine.dev/),
-[canvas-confetti](https://github.com/catdad/canvas-confetti), and [Vite](https://vite.dev/).
+The sixteen MIT-licensed designs are by [bswxyz / Parable](https://github.com/bswxyz).
+Their original notices are preserved in `experiences/*/LICENSE`. Shared integration uses React, Mantine and Vite.
 
 ## Development and testing
 

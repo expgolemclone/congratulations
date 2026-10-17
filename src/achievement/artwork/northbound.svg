@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Topographic map with a glowing route reaching your achievement beyond two ridges."><style></style>
+    <defs>
+      <linearGradient id="route" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="#3fb84a"/><stop offset="1" stop-color="#6cff6a"/>
+      </linearGradient>
+      <radialGradient id="node" cx="50%" cy="50%" r="50%">
+        <stop offset="0" stop-color="#6cff6a" stop-opacity="1"/>
+        <stop offset="55%" stop-color="#6cff6a" stop-opacity=".35"/>
+        <stop offset="100%" stop-color="#6cff6a" stop-opacity="0"/>
+      </radialGradient>
+    </defs>
+    
+    <g fill="none" stroke="#69735c" stroke-opacity=".5">
+      <ellipse cx="330" cy="300" rx="360" ry="210"/>
+      <ellipse cx="330" cy="300" rx="300" ry="172" stroke="#7f8a6b"/>
+      <ellipse cx="330" cy="300" rx="240" ry="136" stroke="#8f9a78"/>
+      <ellipse cx="330" cy="300" rx="182" ry="102" stroke="#a08f5f"/>
+      <ellipse cx="330" cy="300" rx="126" ry="70" stroke="#c98a4b"/>
+      <ellipse cx="330" cy="300" rx="72" ry="40" stroke="#d89a58"/>
+      <ellipse cx="330" cy="300" rx="30" ry="16" stroke="#e6a962"/>
+    </g>
+    
+    <g fill="none" stroke="#69735c" stroke-opacity=".5">
+      <ellipse cx="900" cy="560" rx="330" ry="220"/>
+      <ellipse cx="900" cy="560" rx="270" ry="180" stroke="#7f8a6b"/>
+      <ellipse cx="900" cy="560" rx="210" ry="140" stroke="#8f9a78"/>
+      <ellipse cx="900" cy="560" rx="150" ry="100" stroke="#a08f5f"/>
+      <ellipse cx="900" cy="560" rx="94" ry="62" stroke="#c98a4b"/>
+      <ellipse cx="900" cy="560" rx="44" ry="28" stroke="#d89a58"/>
+    </g>
+    
+    <path d="M70 700 C 240 620, 250 430, 360 380 S 560 360, 640 300 S 760 150, 900 210 S 1120 320, 1160 180"
+          fill="none" stroke="url(#route)" stroke-width="4" stroke-linecap="round" opacity=".95"/>
+    <path d="M70 700 C 240 620, 250 430, 360 380 S 560 360, 640 300 S 760 150, 900 210 S 1120 320, 1160 180"
+          fill="none" stroke="#6cff6a" stroke-width="12" stroke-linecap="round" opacity=".14"/>
+    
+    <g>
+      <circle cx="360" cy="380" r="34" fill="url(#node)"/><circle cx="360" cy="380" r="6" fill="#6cff6a"/>
+      <circle cx="900" cy="210" r="34" fill="url(#node)"/><circle cx="900" cy="210" r="6" fill="#6cff6a"/>
+    </g>
+    
+    <circle cx="70" cy="700" r="7" fill="#a7b199"/>
+    <circle cx="1160" cy="180" r="8" fill="#6cff6a" stroke="#12180f" stroke-width="2"/>
+  </svg>

@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="60 120 840 400" role="img" aria-label="A victory-lap bicycle celebrating your achievement, shown from the side"><style>.bk-ground{stroke:rgba(23, 24, 26, .16);stroke-width:2}
+.bk-shadows ellipse{fill:#17181a;opacity:.08}
+.bk-tire{fill:none;stroke:#232527;stroke-width:15}
+.bk-rim{fill:none;stroke:#7d8076;stroke-width:5}
+.bk-spokes line{stroke:#7d8076;stroke-width:2;opacity:.65}
+.bk-hub{fill:#43464b}
+.bk-cog{fill:none;stroke:#43464b;stroke-width:4}
+.bk-reflect{fill:#c7f04a}
+.bk-belt{fill:none;stroke:#5c5d55;stroke-width:3;stroke-dasharray:7 5}
+.bk-tube{fill:none;stroke:#5a6b3a;stroke-linecap:round;}
+.bk-stay{fill:none;stroke:#5a6b3a;stroke-width:9;stroke-linecap:round;}
+.bk-bar{fill:none;stroke:#43464b;stroke-width:8;stroke-linecap:round}
+.bk-grip{fill:#232527}
+.bk-lamp{fill:#c7f04a}
+.bk-beam{fill:#c7f04a;opacity:.16}
+.bk-batt{fill:#303338}
+.bk-batt-cap{fill:#c7f04a}
+.bk-led{fill:#c7f04a;opacity:.9}
+.bk-motor{fill:#43464b}
+.bk-ring{fill:none;stroke:#7d8076;stroke-width:4}
+.bk-crank{stroke:#232527;stroke-width:9;stroke-linecap:round}
+.bk-pedal{fill:#232527}
+.bk-crank-back{opacity:.35}
+.bk-cap{fill:#f4f0e6}
+.bk-post{stroke:#43464b;stroke-width:8;stroke-linecap:round}
+.bk-saddle{fill:#232527}
+.bk-belt,.bk-shadows{opacity:1!important}</style>
+          <line class="bk-ground" x1="70" y1="508" x2="890" y2="508"/>
+          <g class="bk-shadows"><ellipse cx="218" cy="508" rx="105" ry="7"/><ellipse cx="708" cy="508" rx="105" ry="7"/></g>
+          <g><g transform="translate(218 405)">
+            <circle r="93" class="bk-tire"/><circle r="76" class="bk-rim"/>
+            <g class="bk-spokes"><line y1="-12" y2="-72" transform="rotate(10)"/><line y1="-12" y2="-72" transform="rotate(55)"/><line y1="-12" y2="-72" transform="rotate(100)"/><line y1="-12" y2="-72" transform="rotate(145)"/><line y1="-12" y2="-72" transform="rotate(190)"/><line y1="-12" y2="-72" transform="rotate(235)"/><line y1="-12" y2="-72" transform="rotate(280)"/><line y1="-12" y2="-72" transform="rotate(325)"/></g>
+            <circle r="14" class="bk-cog"/><circle r="12" class="bk-hub"/>
+          </g></g>
+          <g><g transform="translate(708 405)">
+            <circle r="93" class="bk-tire"/><circle r="76" class="bk-rim"/>
+            <g class="bk-spokes"><line y1="-12" y2="-72" transform="rotate(10)"/><line y1="-12" y2="-72" transform="rotate(55)"/><line y1="-12" y2="-72" transform="rotate(100)"/><line y1="-12" y2="-72" transform="rotate(145)"/><line y1="-12" y2="-72" transform="rotate(190)"/><line y1="-12" y2="-72" transform="rotate(235)"/><line y1="-12" y2="-72" transform="rotate(280)"/><line y1="-12" y2="-72" transform="rotate(325)"/></g>
+            <circle cx="28" cy="-34" r="4" class="bk-reflect"/><circle r="12" class="bk-hub"/>
+          </g></g>
+          <path class="bk-belt" d="M452 396 L218 392 M452 444 L218 418"/>
+          <g>
+            <path class="bk-tube" d="M452 415 L668 262" stroke-width="16"/>
+            <path class="bk-tube" d="M452 420 L415 240" stroke-width="14"/>
+            <path class="bk-tube" d="M415 246 L658 228" stroke-width="13"/>
+            <path class="bk-tube" d="M656 220 L680 270" stroke-width="16"/>
+            <path class="bk-stay" d="M680 270 L708 405"/>
+            <path class="bk-stay" d="M452 420 L218 405"/>
+            <path class="bk-stay" d="M415 250 L218 405"/>
+            <path class="bk-stay" d="M656 220 L674 200"/>
+            <path class="bk-bar" d="M674 200 C688 194 678 190 638 197"/>
+            <circle cx="638" cy="197" r="5.5" class="bk-grip"/>
+            <path class="bk-beam" d="M697 248 L788 234 L788 262 Z"/>
+            <circle cx="690" cy="248" r="7" class="bk-lamp"/>
+          </g>
+          <g><g transform="translate(562 336) rotate(-35.5)">
+            <rect x="-95" y="-16" width="190" height="32" rx="14" class="bk-batt"/>
+            <rect x="62" y="-16" width="30" height="32" rx="13" class="bk-batt-cap"/>
+            <circle cx="-74" cy="0" r="3" class="bk-led"/><circle cx="-60" cy="0" r="3" class="bk-led"/><circle cx="-46" cy="0" r="3" class="bk-led"/><circle cx="-32" cy="0" r="3" class="bk-led"/>
+          </g></g>
+          <g><g transform="translate(452 420)">
+            <circle r="34" class="bk-motor"/><circle r="25" class="bk-ring"/>
+            <g class="bk-crank-back"><line x1="0" y1="0" x2="-24" y2="-36" class="bk-crank"/><rect x="-44" y="-42" width="32" height="9" rx="4" class="bk-pedal"/></g>
+            <line x1="0" y1="0" x2="34" y2="50" class="bk-crank"/>
+            <rect x="16" y="45" width="38" height="10" rx="5" class="bk-pedal"/>
+            <circle r="7" class="bk-cap"/>
+          </g></g>
+          <g>
+            <line x1="415" y1="240" x2="400" y2="178" class="bk-post"/>
+            <path d="M350 170 Q352 158 372 156 L444 156 Q460 158 462 166 Q446 178 400 180 Q364 180 350 170 Z" class="bk-saddle"/>
+          </g>
+        </svg>

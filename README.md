@@ -1,6 +1,6 @@
 # Congratulations
 
-An achievement-first celebration with a trophy, personal recognition, and replayable confetti. Reduced-motion users get the same recognition without animation. The caller owns achievement verification and persistence.
+Sixteen randomly selected achievement celebrations, with continuous, pausable animation and reduced-motion support. The caller owns achievement verification and persistence.
 
 The required query fields are `source`, `date` (YYYY-MM-DD), and `achievement`. Their contract is `src/contracts/celebration.mjs`. No credentials or learning data are accepted. Unknown or duplicate fields are rejected.
 

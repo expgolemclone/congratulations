@@ -3,11 +3,12 @@ import { existsSync } from 'node:fs';
 import test from 'node:test';
 
 const root = new URL('../../', import.meta.url);
-test('the achievement screen has no product snapshots or iframe infrastructure', () => {
-  for (const old of ['experiences/', 'public/vendor/', 'scripts/', 'src/achievement/experiences.json',
-    'src/achievement/router.js', 'src/achievement/experience-runtime.js', 'src/achievement/selection.mjs',
-    'src/achievement/shell.css']) {
+test('celebrations share React/Mantine instead of restoring vendor apps and iframe infrastructure', () => {
+  for (const old of ['experiences/', 'public/vendor/', 'scripts/', 'src/achievement/router.js',
+    'src/achievement/experience-runtime.js', 'src/achievement/shell.css']) {
     assert.equal(existsSync(new URL(old, root)), false, old);
   }
-  assert.equal(existsSync(new URL('src/achievement/main.jsx', root)), true);
+  for (const source of ['src/achievement/main.jsx', 'src/achievement/experiences.mjs', 'src/achievement/Experience.jsx']) {
+    assert.equal(existsSync(new URL(source, root)), true, source);
+  }
 });

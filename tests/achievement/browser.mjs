@@ -1,10 +1,11 @@
 import assert from 'node:assert/strict';
 import { fileURLToPath } from 'node:url';
 import { chromium, webkit } from 'playwright';
+import { expect } from 'playwright/test';
 import { celebrationSearch } from '@expgolemclone/congratulations/celebration';
 import { achievementLabel, celebrationCopy, experiences } from '../../src/achievement/experiences.mjs';
 import { startStaticServer } from '../helpers/server-helper.mjs';
-import { assertNoOverflow, celebration, interactWithExperience, observePage, verifyCelebration, verifyMotion } from '../helpers/achievement-checks.mjs';
+import { assertNoOverflow, celebration, interactWithExperience, observePage, verifyCelebration, verifyLongPage, verifyMotion } from '../helpers/achievement-checks.mjs';
 
 const search = celebrationSearch(celebration);
 async function verifyInvalidParameters(browser, origin) {
@@ -34,13 +35,14 @@ async function verifyGenericCallers(browser, origin) {
     try {
       await page.goto(`${origin}/experiences/${experience.id}/?${celebrationSearch({ source, date: '2026-10-03', achievement })}`);
       await page.waitForSelector('html[data-state="ready"]');
-      const art = page.locator('canvas[data-artwork]');
+      const art = page.locator('canvas[data-artwork]').first();
       if (await art.count()) await page.waitForSelector('canvas[data-art-state="ready"]');
-      assert.equal(await page.locator('h2').getAttribute('title'), achievementLabel(achievement));
+      assert.equal(await page.locator('h2').first().getAttribute('title'), achievementLabel(achievement));
       assert.equal(await page.getByTitle(source, { exact: true }).count(), 1);
       assert.doesNotMatch(await page.locator('main').innerText(), /今日の学習ノルマ|全問|満点|残り0|queue clear/i);
       await assertNoOverflow(page);
       await interactWithExperience(page, experience, true, { source, date: '2026-10-03', achievement });
+      await verifyLongPage(page, experience);
       await assertNoOverflow(page); assert.deepEqual(errors, [], experience.id);
     } finally { await page.close(); }
   }
@@ -78,14 +80,15 @@ async function verifySuspension(browser, origin) {
   const page = await browser.newPage({ viewport: { width: 390, height: 240 }, reducedMotion: 'no-preference' });
   const errors = await observePage(page, origin);
   await page.addInitScript(() => {
-    window.__draws = 0;
     const native = HTMLCanvasElement.prototype.getContext;
     HTMLCanvasElement.prototype.getContext = function (type, options) {
       const context = native.call(this, type, options);
       if (type === '2d' && context && !context.__observed) {
         context.__observed = true;
+        const canvas = this;
+        canvas.__draws = 0;
         const clear = context.clearRect.bind(context);
-        context.clearRect = (...args) => { window.__draws++; return clear(...args); };
+        context.clearRect = (...args) => { canvas.__draws++; return clear(...args); };
       }
       return context;
     };
@@ -93,25 +96,26 @@ async function verifySuspension(browser, origin) {
   });
   try {
     await page.goto(`${origin}/experiences/driftline-ocean/?${search}`);
-    const canvas = page.locator('canvas[data-artwork]');
+    const canvas = page.locator('canvas[data-artwork]').first();
     await page.waitForSelector('canvas[data-art-state="ready"]');
     await canvas.scrollIntoViewIfNeeded();
     await page.waitForSelector('canvas[data-motion="running"]');
+    assert.equal(await page.locator('[data-chapter="panorama"] canvas').getAttribute('data-art-state'), 'loading');
     await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
-    await page.waitForSelector('canvas[data-motion="suspended"]');
-    const offscreen = await page.evaluate(() => window.__draws);
+    await expect(canvas).toHaveAttribute('data-motion', 'suspended');
+    const offscreen = await canvas.evaluate(node => node.__draws);
     await page.waitForTimeout(200);
-    assert.equal(await page.evaluate(() => window.__draws), offscreen);
+    assert.equal(await canvas.evaluate(node => node.__draws), offscreen);
     await canvas.scrollIntoViewIfNeeded();
     await page.waitForSelector('canvas[data-motion="running"]');
     await page.evaluate(() => { window.__hidden = true; document.dispatchEvent(new Event('visibilitychange')); });
-    await page.waitForSelector('canvas[data-motion="suspended"]');
-    const hidden = await page.evaluate(() => window.__draws);
+    await expect(canvas).toHaveAttribute('data-motion', 'suspended');
+    const hidden = await canvas.evaluate(node => node.__draws);
     await page.waitForTimeout(200);
-    assert.equal(await page.evaluate(() => window.__draws), hidden);
+    assert.equal(await canvas.evaluate(node => node.__draws), hidden);
     await page.evaluate(() => { window.__hidden = false; document.dispatchEvent(new Event('visibilitychange')); });
     await page.waitForSelector('canvas[data-motion="running"]');
-    await page.waitForFunction(previous => window.__draws > previous, hidden);
+    await expect.poll(() => canvas.evaluate(node => node.__draws)).toBeGreaterThan(hidden);
     assert.deepEqual(errors, []);
   } finally { await page.close(); }
 }
@@ -125,6 +129,33 @@ async function verifyDrawingFailure(browser, origin) {
     assert.equal(await page.locator('html').getAttribute('data-experience-id'), 'formwork-isometria');
     assert.equal(await page.locator('canvas[data-art-state="error"]').count(), 1);
     assert.equal(await page.getByRole('heading', { level: 1 }).innerText(), celebrationCopy(celebration).title);
+  } finally { await page.close(); }
+}
+
+async function verifyDeferredFailure(browser, origin) {
+  const page = await browser.newPage({ reducedMotion: 'reduce' });
+  const errors = await observePage(page, origin);
+  await page.addInitScript(() => {
+    const native = HTMLCanvasElement.prototype.getContext;
+    HTMLCanvasElement.prototype.getContext = function (...args) {
+      if (this.closest('[data-chapter="exhibit"]')) return null;
+      return native.apply(this, args);
+    };
+  });
+  try {
+    await page.goto(`${origin}/experiences/driftline-ocean/?${search}`);
+    const hero = page.locator('[data-chapter="hero"] canvas');
+    await expect(hero).toHaveAttribute('data-art-state', 'ready');
+    const exhibit = page.locator('[data-chapter="exhibit"]');
+    await expect(exhibit.locator('canvas')).toHaveAttribute('data-art-state', 'loading');
+    await exhibit.scrollIntoViewIfNeeded();
+    await exhibit.getByRole('alert').waitFor();
+    await expect(exhibit.locator('canvas')).toHaveAttribute('data-art-state', 'error');
+    const panorama = page.locator('[data-chapter="panorama"] canvas');
+    await panorama.scrollIntoViewIfNeeded();
+    await expect(panorama).toHaveAttribute('data-art-state', 'ready');
+    await expect(hero).toHaveAttribute('data-art-state', 'ready');
+    assert.deepEqual(errors, []);
   } finally { await page.close(); }
 }
 
@@ -152,6 +183,7 @@ try {
       }
       await verifySuspension(browser, server.origin);
       await verifyDrawingFailure(browser, server.origin);
+      await verifyDeferredFailure(browser, server.origin);
     } finally { await browser.close(); }
   }
   console.log('All sixteen celebrations passed mobile touch, desktop keyboard, random entry, motion, failure and contract checks in Chromium and WebKit');

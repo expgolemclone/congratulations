@@ -97,32 +97,74 @@ export async function verifyMotion(browser, origin, experience, { sustained = fa
   };
   try {
     await page.goto(`${origin}/experiences/${experience.id}/?${celebrationSearch(celebration)}`);
-    const canvas = page.locator('canvas[data-artwork]');
-    await page.waitForSelector('canvas[data-art-state="ready"]');
-    await canvas.scrollIntoViewIfNeeded();
-    await page.waitForSelector('canvas[data-motion="running"]');
-    const first = await canvas.screenshot();
-    await page.waitForTimeout(sustained ? 5300 : 200);
-    assert.notDeepEqual(await canvas.screenshot(), first, `${experience.id} must keep animating`);
-    assert.equal(await canvas.getAttribute('data-motion'), 'running');
-    await activate(page.getByRole('button', { name: '動きを一時停止', exact: true }));
-    await page.waitForSelector('canvas[data-motion="paused"]');
-    await expect(page.getByRole('button', { name: '祝福をもう一度' })).toBeDisabled();
-    const paused = await canvas.screenshot(); await page.waitForTimeout(200);
-    assert.deepEqual(await canvas.screenshot(), paused, `${experience.id} must pause`);
-    await activate(page.getByRole('button', { name: '動きを再開', exact: true }));
-    await canvas.scrollIntoViewIfNeeded();
-    await page.waitForSelector('canvas[data-motion="running"]');
-    const resumed = await canvas.screenshot(); await page.waitForTimeout(200);
-    assert.notDeepEqual(await canvas.screenshot(), resumed, `${experience.id} must resume`);
-    await page.emulateMedia({ reducedMotion: 'reduce' });
-    await page.waitForSelector('canvas[data-motion="static"]');
-    assert.equal(await page.getByRole('button', { name: /動きを一時停止|動きを再開|祝福をもう一度/ }).count(), 0);
-    assert.equal(await page.locator('canvas:not([data-artwork])').count(), 0);
-    const reduced = await canvas.screenshot(); await page.waitForTimeout(200);
-    assert.deepEqual(await canvas.screenshot(), reduced);
+    const canvases = await page.locator('canvas[data-artwork]').all();
+    for (let index = 0; index < canvases.length; index++) {
+      const canvas = canvases[index], context = `${experience.id} artwork ${index + 1}`;
+      await page.emulateMedia({ reducedMotion: 'no-preference' });
+      await canvas.scrollIntoViewIfNeeded();
+      await expect(canvas).toHaveAttribute('data-art-state', 'ready');
+      await expect(canvas).toHaveAttribute('data-motion', 'running');
+      const first = await canvas.screenshot();
+      await page.waitForTimeout(sustained && index === 0 ? 5300 : 200);
+      assert.notDeepEqual(await canvas.screenshot(), first, `${context} must keep animating`);
+      await activate(page.getByRole('button', { name: '動きを一時停止', exact: true }));
+      await expect(canvas).toHaveAttribute('data-motion', 'paused');
+      await expect(page.getByRole('button', { name: '祝福をもう一度' })).toBeDisabled();
+      const paused = await canvas.screenshot(); await page.waitForTimeout(200);
+      assert.deepEqual(await canvas.screenshot(), paused, `${context} must pause`);
+      await activate(page.getByRole('button', { name: '動きを再開', exact: true }));
+      await canvas.scrollIntoViewIfNeeded();
+      await expect(canvas).toHaveAttribute('data-motion', 'running');
+      const resumed = await canvas.screenshot(); await page.waitForTimeout(200);
+      assert.notDeepEqual(await canvas.screenshot(), resumed, `${context} must resume`);
+      await page.emulateMedia({ reducedMotion: 'reduce' });
+      await expect(canvas).toHaveAttribute('data-motion', 'static');
+      assert.equal(await page.getByRole('button', { name: /動きを一時停止|動きを再開|祝福をもう一度/ }).count(), 0);
+      assert.equal(await page.locator('canvas:not([data-artwork])').count(), 0);
+      const reduced = await canvas.screenshot(); await page.waitForTimeout(200);
+      assert.deepEqual(await canvas.screenshot(), reduced, `${context} must respect reduced motion`);
+    }
     assert.deepEqual(errors, [], experience.id);
   } finally { await page.close(); }
+}
+
+export async function verifyLongPage(page, experience) {
+  const chapters = page.locator('[data-chapter]');
+  assert.deepEqual(await chapters.evaluateAll(nodes => nodes.map(node => node.dataset.chapter)),
+    ['hero', ...experience.chapters, 'closing']);
+  const { width } = page.viewportSize();
+  assert(await page.evaluate(() => document.documentElement.scrollHeight) >= (width >= 600 ? 3000 : 3300),
+    `${experience.id} must be a substantial landing page, not a single screen`);
+  for (const chapter of await chapters.all()) {
+    await chapter.scrollIntoViewIfNeeded();
+    await expect(chapter).toBeVisible();
+    const canvas = chapter.locator('canvas[data-artwork]');
+    if (await canvas.count()) {
+      await canvas.scrollIntoViewIfNeeded();
+      await expect(canvas).toHaveAttribute('data-art-state', 'ready');
+    }
+    await assertNoOverflow(page);
+  }
+  const exhibit = page.locator('[data-chapter="exhibit"]');
+  const canvas = exhibit.locator('canvas');
+  await canvas.scrollIntoViewIfNeeded();
+  const zoom = page.getByRole('slider', { name: 'ビジュアルの拡大率', exact: true });
+  if (width < 600) {
+    const control = exhibit.locator('.mantine-Slider-root');
+    await control.scrollIntoViewIfNeeded();
+    const box = await control.boundingBox();
+    await page.touchscreen.tap(box.x + box.width * 0.8, box.y + box.height / 2);
+    // Mantine batches touch movement into an animation frame. Finish it before switching to keyboard input.
+    await page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
+    await expect.poll(async () => Number(await zoom.getAttribute('aria-valuenow'))).toBeGreaterThan(100);
+    await expect.poll(async () => Number(await zoom.getAttribute('aria-valuenow'))).toBeLessThan(175);
+  }
+  await zoom.focus(); await page.keyboard.press('Home');
+  await expect(zoom).toHaveAttribute('aria-valuenow', '100');
+  const normal = await canvas.screenshot();
+  await zoom.focus(); await page.keyboard.press('End');
+  await expect(zoom).toHaveAttribute('aria-valuenow', '175');
+  assert.notDeepEqual(await canvas.screenshot(), normal, `${experience.id} zoom must change the actual artwork`);
 }
 
 export async function verifyCelebration(browser, origin, { experience = experiences[0], viewport = { width: 390, height: 844 },
@@ -150,8 +192,9 @@ export async function verifyCelebration(browser, origin, { experience = experien
     assert.doesNotMatch(await page.locator('main').innerText(), /your achievement|your goal|dueCardsRemaining|pre-?order|shop|contact|100%|軌跡|あなたの光|あなたへの拍手|合格確実/iu);
     await page.waitForFunction(() => window.__readyMessages.length === 1);
     assert.deepEqual(await page.evaluate(() => window.__readyMessages[0]), { type: 'celebration:ready', experienceId: experience.id, celebration });
-    const artwork = page.locator('canvas[data-artwork]');
-    assert.equal(await artwork.count(), 1);
+    const artwork = page.locator('canvas[data-artwork]').first();
+    assert.equal(await page.locator('canvas[data-artwork]').count(), 3);
+    await artwork.scrollIntoViewIfNeeded();
     await page.waitForSelector('canvas[data-art-state="ready"]', { timeout: 30_000 });
     if (reducedMotion === 'reduce') {
       assert.equal(await artwork.getAttribute('data-motion'), 'static');
@@ -161,6 +204,7 @@ export async function verifyCelebration(browser, origin, { experience = experien
     }
     await assertNoOverflow(page);
     if (interact) await interactWithExperience(page, experience, touch);
+    await verifyLongPage(page, experience);
     await assertNoOverflow(page);
     if (screenshot) await page.screenshot({ path: screenshot, fullPage: true });
     assert.deepEqual(errors, [], experience.id);

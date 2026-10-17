@@ -50,4 +50,4 @@ try {
     await verifyMotion(browser, origin, experiences.find(item => item.id === id), { touch: true, sustained: true });
   }
 } finally { await browser.close(); }
-console.log('Production random entry, all sixteen celebrations, sustained motion, touch controls and exact deployed assets verified');
+console.log('Production random entry, all sixteen six-chapter landing pages, three artworks per page, sustained motion, touch zoom, pause/resume and exact deployed assets verified');

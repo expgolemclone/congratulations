@@ -16,7 +16,7 @@ export async function createArtwork(canvas, kind) {
     if (kind === 'terrain') route = new Path2D(new DOMParser().parseFromString(terrainSource, 'image/svg+xml').querySelector('path').getAttribute('d'));
   }
   return {
-    draw(time, value) {
+    draw(time, value, framing = 1) {
       const ratio = Math.min(devicePixelRatio || 1, 1.5);
       const w = canvas.clientWidth, h = canvas.clientHeight;
       if (canvas.width !== Math.round(w * ratio) || canvas.height !== Math.round(h * ratio)) {
@@ -24,6 +24,7 @@ export async function createArtwork(canvas, kind) {
       }
       ctx.setTransform(ratio, 0, 0, ratio, 0, 0); ctx.clearRect(0, 0, w, h);
       const cx = w / 2, cy = h / 2, unit = Math.min(w, h);
+      ctx.translate(cx, cy); ctx.scale(framing, framing); ctx.translate(-cx, -cy);
       const line = (points, color, width = 1) => {
         ctx.beginPath(); points.forEach(([x, y], i) => i ? ctx.lineTo(x, y) : ctx.moveTo(x, y));
         ctx.strokeStyle = color; ctx.lineWidth = width; ctx.stroke();

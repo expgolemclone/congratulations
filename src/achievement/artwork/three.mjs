@@ -37,7 +37,8 @@ export function createArtwork(canvas, kind) {
         p.setXYZ(i, p.getX(i) * factor, p.getY(i) * factor, p.getZ(i) * factor);
       }
       geometry.deleteAttribute('normal'); geometry.deleteAttribute('uv');
-      geometry = mergeVertices(geometry);
+      const merged = mergeVertices(geometry);
+      geometry.dispose(); geometry = merged;
       geometry.computeVertexNormals();
       chromePositions = geometry.attributes.position.array.slice();
     }
@@ -97,7 +98,8 @@ export function createArtwork(canvas, kind) {
   }
 
   return {
-    draw(time, value) {
+    draw(time, value, framing = 1) {
+      if (camera.zoom !== framing) { camera.zoom = framing; camera.updateProjectionMatrix(); }
       if (width !== canvas.clientWidth || height !== canvas.clientHeight) {
         width = canvas.clientWidth; height = canvas.clientHeight;
         renderer.setSize(width, height, false);

@@ -14,6 +14,13 @@ test('all sixteen original identities share factual copy, not sixteen forced met
   for (const experience of experiences) {
     assert.match(experience.background, /^#[a-f0-9]{6}$/);
     assert(Object.isFrozen(experience));
+    assert.equal(new Set(experience.chapters).size, 4);
+    assert.deepEqual([...experience.chapters].sort(), ['exhibit', 'note', 'panorama', 'record']);
+    assert.equal(experience.chapters.at(-1), 'panorama');
+    assert(Object.isFrozen(experience.chapters));
+    assert.match(experience.artwork, /^[a-z]+$/);
+    assert(experience.exhibit.length > 0);
+    assert(['editorial', 'receipt', 'center', 'reverse'].includes(experience.layout));
     assert.equal(experienceForPath(`/experiences/${experience.id}/`), experience);
     assert.equal(experienceForPath(`/experiences/${experience.id}/index.html`), experience);
   }

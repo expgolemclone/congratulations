@@ -29,7 +29,8 @@ test('the published archive excludes site snapshots, vendors and private impleme
   assert(process.env.npm_execpath, 'Run package verification through npm test');
   const result = spawnSync(process.execPath,
     [process.env.npm_execpath, 'pack', '--dry-run', '--json'],
-    { cwd: root, encoding: 'utf8', windowsHide: true });
+    { cwd: root, encoding: 'utf8', windowsHide: true,
+      env: { ...process.env, NODE_OPTIONS: '' } });
   assert.ifError(result.error);
   assert.equal(result.status, 0, result.stderr);
   const [archive] = JSON.parse(result.stdout);

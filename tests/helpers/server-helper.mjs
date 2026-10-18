@@ -3,14 +3,13 @@ import { once } from "node:events";
 import { createServer } from "node:net";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
-import { toolExecutable } from "@expgolemclone/envx-runtime";
 
 
 
 
 const projectRoot = resolve(dirname(fileURLToPath(import.meta.url)), "../..");
 const repositoryRoot = projectRoot;
-const wranglerPath = toolExecutable('wrangler');
+const wranglerPath = fileURLToPath(new URL('./bin/wrangler.js', import.meta.resolve('wrangler/package.json')));
 
 async function getAvailablePort() {
   const probe = createServer();

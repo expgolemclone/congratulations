@@ -67,11 +67,11 @@ export async function interact(page, id, touch) {
       const day = await island.screenshot();
       await activate(page.locator('#daynight'));
       await expect(page.locator('body')).toHaveClass(/night/);
-      assert.notDeepEqual(await island.screenshot(), day, 'Day/night must relight the native scene');
+      assert(!(await island.screenshot()).equals(day), 'Day/night must relight the native scene');
       const before = await island.screenshot();
       await island.focus();
       for (let i = 0; i < 8; i++) await page.keyboard.press('ArrowRight');
-      assert.notDeepEqual(await island.screenshot(), before, 'Keyboard must rotate the actual island'); break;
+      assert(!(await island.screenshot()).equals(before), 'Keyboard must rotate the actual island'); break;
     }
     case 'formwork-meridian':
       await page.locator('#tab-espresso').focus(); await page.keyboard.press('ArrowRight');
@@ -97,7 +97,7 @@ export async function interact(page, id, touch) {
       await expect(page.locator('input[name="paint"][value="moss"]')).toBeChecked();
       assert.match(await page.locator('#sumName').innerText(), /Moss/i);
       await expect(page.locator('html')).toHaveAttribute('data-paint', 'moss');
-      assert.notDeepEqual(await bicycle.screenshot(), before, 'Paint must change the native bicycle'); break;
+      assert(!(await bicycle.screenshot()).equals(before), 'Paint must change the native bicycle'); break;
     }
     case 'northbound-ev':
       await activate(page.locator('.route-tab[data-route="coastal"]'));
@@ -109,7 +109,7 @@ export async function interact(page, id, touch) {
       await page.locator('#scopeHit').focus();
       for (let i = 0; i < 20; i++) await page.keyboard.press('ArrowRight');
       await page.waitForTimeout(200);
-      assert.notDeepEqual(await canvas.screenshot(), before, 'Native reticle must respond to keyboard'); break;
+      assert(!(await canvas.screenshot()).equals(before), 'Native reticle must respond to keyboard'); break;
     }
     // These experiences are visual/scroll instruments, not generic buttons or sliders.
     default:

@@ -10,6 +10,22 @@ const canvases = {
   'formwork-neon': '#grid', 'halcyon-ring': '#dusk', 'northbound-ev': '#terrain canvas', 'perigee-astro': '.sky',
 };
 
+export async function expectCanvasAnimation(canvas, before, id) {
+  await expect.poll(async () => (await canvas.screenshot()).equals(before), {
+    message: `${id} must keep its native animation`,
+  }).toBe(false);
+}
+
+export async function expectCanvasStill(canvas, id) {
+  await canvas.scrollIntoViewIfNeeded();
+  // Observe finite layout transitions without disabling or advancing native animation.
+  await expect.poll(() => canvas.page().evaluate(() => document.getAnimations().some(animation =>
+    animation.playState === 'running' && Number.isFinite(animation.effect.getComputedTiming().endTime)))).toBe(false);
+  const before = await canvas.screenshot();
+  await canvas.page().waitForTimeout(300);
+  assert((await canvas.screenshot()).equals(before), `${id} must not animate in reduced motion`);
+}
+
 export async function verifyGraphics(browser, origin) {
   for (const [id, selector] of Object.entries(canvases)) {
     for (const reducedMotion of ['no-preference', 'reduce']) {
@@ -42,11 +58,8 @@ export async function verifyGraphics(browser, origin) {
           await canvas.scrollIntoViewIfNeeded();
           await expect.poll(() => canvas.evaluate(node => node.__draws || 0)).toBeGreaterThan(0);
           await page.waitForTimeout(500);
-          const before = await canvas.screenshot();
-          await page.waitForTimeout(300);
-          const after = await canvas.screenshot();
           if (reducedMotion === 'reduce') {
-            assert.deepEqual(after, before, `${id} must not animate in reduced motion`);
+            await expectCanvasStill(canvas, id);
             const size = await canvas.evaluate(node => ({ width: node.width, height: node.height, draws: node.__draws }));
             await page.setViewportSize({ width: 820, height: 700 });
             await page.waitForTimeout(300);
@@ -54,7 +67,8 @@ export async function verifyGraphics(browser, origin) {
             if (resized.width !== size.width || resized.height !== size.height) {
               assert(resized.draws > size.draws, `${id} must redraw its static scene after resize`);
             }
-          } else assert.notDeepEqual(after, before, `${id} must keep its native animation`);
+            await expectCanvasStill(canvas, `${id} after resize`);
+          } else await expectCanvasAnimation(canvas, await canvas.screenshot(), id);
         }
         assert.deepEqual(errors, [], id);
       } finally { await page.close(); }

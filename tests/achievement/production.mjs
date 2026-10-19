@@ -30,7 +30,7 @@ await Promise.all(Array.from({ length: 6 }, async () => {
     assert.equal(deployed.status, 200, path);
     const immutable = path.startsWith('assets/') || path.startsWith('vendor/');
     assert.equal(deployed.headers.get('cache-control'), immutable ? 'public, max-age=31536000, immutable' : 'no-cache', path);
-    assert.deepEqual(Buffer.from(await deployed.arrayBuffer()), await readFile(new URL(path, dist)), path);
+    assert(Buffer.from(await deployed.arrayBuffer()).equals(await readFile(new URL(path, dist))), path);
   }
 }));
 for (const path of ['/experiences/nope/', '/vendor/old.js']) assert.equal((await fetch(`${origin}${path}`)).status, 404);

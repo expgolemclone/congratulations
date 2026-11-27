@@ -6,7 +6,7 @@ test('arbitrary applications and achievements share the same contract', () => {
   for (const source of ['chushoks.kakomonn.com', 'smec-second', 'workout']) {
     const value = { source, date: '2026-10-03', achievement: 'daily-goal' };
     assert.deepEqual(parseCelebration(celebrationSearch(value)), value);
-    assert.equal(new URL(celebrationURL(value)).hostname, 'kakomonn-congratulations.kakomonn.workers.dev');
+    assert.equal(new URL(celebrationURL(value)).hostname, 'kakomonn-congratulations.expgolemclone.workers.dev');
   }
 });
 

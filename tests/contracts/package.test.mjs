@@ -13,7 +13,7 @@ test('the congratulations package exposes only its two public entries', async ()
     './celebration': './src/contracts/celebration.mjs', './feedback': './src/feedback/index.mjs',
   });
   assert.equal(celebrationURL({ source: 'workout', date: '2026-10-03', achievement: 'daily-goal' }),
-    'https://kakomonn-congratulations.kakomonn.workers.dev/?achievement=daily-goal&date=2026-10-03&source=workout');
+    'https://kakomonn-congratulations.expgolemclone.workers.dev/?achievement=daily-goal&date=2026-10-03&source=workout');
   for (const entry of ['@expgolemclone/congratulations',
     '@expgolemclone/congratulations/src/contracts/celebration.mjs']) {
     await assert.rejects(import(entry), { code: 'ERR_PACKAGE_PATH_NOT_EXPORTED' });

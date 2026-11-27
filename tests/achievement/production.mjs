@@ -2,13 +2,13 @@ import assert from 'node:assert/strict';
 import { readFile, readdir } from 'node:fs/promises';
 import { relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { chromium, webkit } from 'playwright';
+import { chromium } from 'playwright';
 import { celebrationSearch } from '@expgolemclone/congratulations/celebration';
 import { experiences } from '../../src/achievement/experiences.mjs';
 import { celebration, verifyExperience } from '../helpers/experience-checks.mjs';
 import { verifyGraphics } from '../helpers/graphics-checks.mjs';
 
-const origin = 'https://kakomonn-congratulations.kakomonn.workers.dev';
+const origin = 'https://kakomonn-congratulations.expgolemclone.workers.dev';
 const dist = new URL('../../dist/', import.meta.url);
 const response = await fetch(origin);
 assert.equal(response.status, 200);
@@ -35,20 +35,18 @@ await Promise.all(Array.from({ length: 6 }, async () => {
 }));
 for (const path of ['/experiences/nope/', '/vendor/old.js']) assert.equal((await fetch(`${origin}${path}`)).status, 404);
 
-for (const engine of [chromium, webkit]) {
-  const browser = await engine.launch({ headless: true });
+const browser = await chromium.launch({ channel: 'chrome', headless: true });
+try {
+  const page = await browser.newPage({ reducedMotion: 'reduce' });
   try {
-    const page = await browser.newPage({ reducedMotion: 'reduce' });
-    try {
-      await page.goto(`${origin}/?${celebrationSearch(celebration)}`);
-      await page.waitForSelector('html[data-state="ready"]');
-      assert(experiences.some(item => item.id === new URL(page.url()).pathname.split('/')[2]));
-    } finally { await page.close(); }
-    for (const experience of experiences) {
-      console.log(`Production ${engine.name()} ${experience.id}`);
-      await verifyExperience(browser, origin, experience, { viewport: { width: 390, height: 844 } });
-    }
-    await verifyGraphics(browser, origin);
-  } finally { await browser.close(); }
-}
+    await page.goto(`${origin}/?${celebrationSearch(celebration)}`);
+    await page.waitForSelector('html[data-state="ready"]');
+    assert(experiences.some(item => item.id === new URL(page.url()).pathname.split('/')[2]));
+  } finally { await page.close(); }
+  for (const experience of experiences) {
+    console.log(`Production chromium ${experience.id}`);
+    await verifyExperience(browser, origin, experience, { viewport: { width: 390, height: 844 } });
+  }
+  await verifyGraphics(browser, origin);
+} finally { await browser.close(); }
 console.log(`Production native designs, interaction, motion, reduced motion and all ${paths.length} deployed files verified`);

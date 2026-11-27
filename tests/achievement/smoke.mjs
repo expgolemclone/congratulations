@@ -6,7 +6,7 @@ import { celebrationSearch } from '@expgolemclone/congratulations/celebration';
 import { startStaticServer } from '../helpers/server-helper.mjs';
 
 const server = await startStaticServer();
-const browser = await chromium.launch({ headless: true });
+const browser = await chromium.launch({ channel: 'chrome', headless: true });
 try {
   for (const experience of experiences) {
     const page = await browser.newPage({ reducedMotion: 'reduce' });

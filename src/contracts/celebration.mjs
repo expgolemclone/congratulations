@@ -1,4 +1,4 @@
-export const CELEBRATION_ORIGIN = 'https://kakomonn-congratulations.kakomonn.workers.dev';
+export const CELEBRATION_ORIGIN = 'https://kakomonn-congratulations.expgolemclone.workers.dev';
 export const READY_MESSAGE = 'celebration:ready';
 const keys = ['achievement', 'date', 'source'];
 const identifier = /^[a-z0-9](?:[a-z0-9.-]{0,126}[a-z0-9])?$/;
